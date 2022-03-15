@@ -5,13 +5,18 @@ const
         getByOperationId,
         createOperation,
         updateOperation,
-        deleteOperation
+        deleteOperation,
+        getOperationsHome,
+        getOperationsGraphic
     } = require('../controllers/operations.controllers');
 const { getUsers, createUser, getByUserId, updateUser, deleteUser } = require('../controllers/users.controllers');
 
 const router = Router();
 
 // /api
+router.get('/home', getOperationsHome);
+router.get('/home/graphic', getOperationsGraphic); 
+
 router.get('/operations', getOperations); 
 router.get('/operation/:id', getByOperationId);
 router.post('/operations', createOperation);

@@ -1,7 +1,7 @@
 import { Grid } from '@chakra-ui/react'
 import React from 'react'
-import { FormOperations } from '../FormOperations/FormOperations'
-import { TableOperations } from '../TableOperations/TableOperations'
+import { Graphic } from '../../Components/Graphic/Graphic'
+import { TableOperations } from '../../Components/TableOperations/TableOperations'
 
 export const Home = () => {
   return (
@@ -11,7 +11,8 @@ export const Home = () => {
       gap={6}
       padding={6}
     >
-      <TableOperations />
+      <Graphic />
+      <TableOperations requestType={'home'} requestForm={false}/>
     </Grid>
 
   )

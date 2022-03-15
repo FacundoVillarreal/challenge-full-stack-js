@@ -1,7 +1,7 @@
 const pool = require('../db/database');
 
 const getOperations = async (req, res) => {
-    const response = await pool.query('SELECT * FROM income_and_expenses');
+    const response = await pool.query('SELECT * FROM income_and_expenses ORDER BY id ASC');
     res.json(response.rows);
 }
 
@@ -13,6 +13,16 @@ const getByOperationId = async (req, res) => {
     } catch (error) {
         console.log(error)
     }
+}
+
+const getOperationsHome = async (req, res) => {
+    const response = await pool.query('SELECT * FROM income_and_expenses ORDER BY id DESC LIMIT 10');
+    res.json(response.rows);
+}
+
+const getOperationsGraphic = async (req, res) => {
+    const response = await pool.query('SELECT tipo, monto FROM income_and_expenses ORDER BY id DESC LIMIT 10');
+    res.json(response.rows);
 }
 
 const createOperation = async (req, res) => {
@@ -71,5 +81,7 @@ module.exports = {
     getByOperationId,
     createOperation,
     updateOperation,
-    deleteOperation
+    deleteOperation,
+    getOperationsHome,
+    getOperationsGraphic
 }

@@ -1,10 +1,11 @@
 import { CalendarIcon, QuestionIcon } from '@chakra-ui/icons'
 import { Box, Button, Input, InputGroup, InputLeftElement, Radio, RadioGroup, Stack, Text, useToast } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { LoadingContext } from '../../App';
 
-export const FormOperations = ({setIsLoading}) => {
+export const FormOperations = () => {
     const toast = useToast();
-
+    const [_, setIsLoading] = useContext(LoadingContext);
 
     const [userId, setUserId] = useState(1);
     const [concepto, setConcepto] = useState('');
@@ -81,8 +82,14 @@ export const FormOperations = ({setIsLoading}) => {
 
 
     return (
-        <Box bg='twitter.900' height='330px' width='lg' style={{ borderRadius: '10px' }} >
-            <Text fontSize='30px' textAlign={'center'} color='white' pt={2}>Formulario de registro de operación</Text>
+        <Box bg='twitter.900' height='330px' width='500px' style={{ borderRadius: '10px' }} >
+            <Text
+                fontSize='30px'
+                textAlign={'center'}
+                color='white' pt={2}
+            >
+                Formulario de registro de operación
+            </Text>
             <Box color='white'>
 
                 <form onSubmit={handleSubmit}>

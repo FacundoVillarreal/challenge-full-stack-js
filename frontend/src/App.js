@@ -1,26 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ChakraProvider,
   Box,
   theme,
 } from '@chakra-ui/react';
-import { ListOfOperations } from './Components/ListOfOperations/ListOfOperations'
-import { BrowserRouter, Route, Router, Routes } from 'react-router-dom'
-import { Home } from './Components/Home/Home';
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+
 import { Users } from './Components/Users/Users';
+import { Home } from './Pages/Home/Home';
+import { Operations } from './Pages/Operations/Operations';
+import { Header } from './Components/Header/Header';
+import Login from './Pages/Login/Login';
+
+// Create a Context
+export const LoadingContext = React.createContext();
+
 function App() {
+
+  const [isLoading, setIsLoading] = useState(false)
+
+
   return (
     <BrowserRouter>
       <ChakraProvider theme={theme}>
         <Box textAlign="start" fontSize="xl">
-          <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/users' element={<Users />} />
-            <Route path='/operations' element={<ListOfOperations />} />
-          </Routes>
+          <LoadingContext.Provider value={[isLoading, setIsLoading]}>
+            <Header />
+            <Routes>
+              <Route path='/' element={<Home />} />
+              <Route path='/login' element={<Login />} />
+              <Route path='/users' element={<Users />} />
+              <Route path='/operations' element={<Operations />} />
+            </Routes>
+          </LoadingContext.Provider>
         </Box>
       </ChakraProvider>
-    </BrowserRouter>
+    </BrowserRouter >
   );
 }
 
