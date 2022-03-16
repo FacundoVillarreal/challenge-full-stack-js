@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     Flex,
     Heading,
@@ -12,18 +12,76 @@ import {
     Link,
     Avatar,
     FormControl,
-    FormHelperText,
-    InputRightElement
+    InputRightElement,
+    Text,
+    useToast
 } from "@chakra-ui/react";
 import { FaUserAlt, FaLock } from "react-icons/fa";
+import { NavLink, useNavigate } from "react-router-dom";
+import { UserContext } from "../../App";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 const Login = () => {
+
+    const [userId, setUserId] = useContext(UserContext);
+
     const [showPassword, setShowPassword] = useState(false);
 
     const handleShowClick = () => setShowPassword(!showPassword);
+    const navigate = useNavigate();
+    const toast = useToast();
+
+    const [emailValue, setEmailValue] = useState("");
+    const [passValue, setPassValue] = useState("");
+
+
+    const handleChange = (e) => {
+        switch (e.target.name) {
+            case 'email':
+                setEmailValue(e.target.value);
+                break;
+            case 'password':
+                setPassValue(e.target.value);
+                break;
+            default:
+                break;
+        }
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const values = { email: emailValue, password: passValue }
+        fetch('http://localhost:3001/api/user/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(values)
+        })
+            .then(response => response.json())
+            .then(res => {
+                const { message, state, user_id } = res;
+                if (state) {
+                    if (user_id != undefined) {
+                        setUserId(user_id);
+                        navigate('/');
+                    }
+                } else {
+                    toast({
+                        title: `${message}`,
+                        status: 'error',
+                        duration: 4000,
+                        isClosable: true,
+                    })
+                }
+            })
+    }
+
+    useEffect(() => {
+        userId && console.log("ok")
+    }, [userId])
 
     return (
         <Flex
@@ -42,7 +100,7 @@ const Login = () => {
                 <Avatar bg="twitter.900" />
                 <Heading color="twitter.800">Bienvenido</Heading>
                 <Box minW={{ base: "90%", md: "468px" }}>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <Stack
                             spacing={4}
                             p="1rem"
@@ -55,7 +113,12 @@ const Login = () => {
                                         pointerEvents="none"
                                         children={<CFaUserAlt color="gray.300" />}
                                     />
-                                    <Input type="email" placeholder="Correo electrónico" />
+                                    <Input
+                                        type="email"
+                                        placeholder="Correo electrónico"
+                                        name="email"
+                                        value={emailValue}
+                                        onChange={handleChange} />
                                 </InputGroup>
                             </FormControl>
                             <FormControl>
@@ -68,6 +131,9 @@ const Login = () => {
                                     <Input
                                         type={showPassword ? "text" : "password"}
                                         placeholder="Contraseña"
+                                        name="password"
+                                        value={passValue}
+                                        onChange={handleChange}
                                     />
                                     <InputRightElement width="4.5rem">
                                         <Button h="1.75rem" size="sm" onClick={handleShowClick}>
@@ -90,9 +156,11 @@ const Login = () => {
                 </Box>
             </Stack>
             <Box>
-                <Link color="twitter.800" href="/newUser">
-                    Crear Cuenta
-                </Link>
+                <NavLink as={Link} to="/auth/newUser">
+                    <Text color={"twitter.800"} fontSize='15px' fontWeight={'semibold'}>
+                        Crear Cuenta
+                    </Text>
+                </NavLink>
             </Box>
         </Flex>
     );

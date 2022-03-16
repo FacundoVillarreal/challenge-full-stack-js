@@ -23,7 +23,9 @@ export const Header = () => {
                         </Link>
                     </MenuGroup>
                     <MenuDivider />
-                    <MenuItem>Iniciar Sesión || Cerrar Sesión</MenuItem>
+                    <Link to="/auth/login">
+                        <MenuItem>Iniciar Sesión || Cerrar Sesión</MenuItem>
+                    </Link>
                 </MenuList>
             </Menu>
         </Grid>

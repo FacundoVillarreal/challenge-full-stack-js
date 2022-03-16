@@ -9,7 +9,7 @@ const
         getOperationsHome,
         getOperationsGraphic
     } = require('../controllers/operations.controllers');
-const { getUsers, createUser, getByUserId, updateUser, deleteUser } = require('../controllers/users.controllers');
+const { getUsers, createUser, getByUserId, updateUser, deleteUser, loginUser } = require('../controllers/users.controllers');
 
 const router = Router();
 
@@ -27,8 +27,9 @@ router.delete('/operation/:id', deleteOperation);
 router.get('/users', getUsers);
 router.get('/user/:id', getByUserId);
 router.post('/users', createUser);
-router.put('/user/:id', updateUser);
-router.delete('/user/:id', deleteUser);
+router.post('/user/login', loginUser);
+// router.put('/user/:id', updateUser);
+// router.delete('/user/:id', deleteUser);
 
 
 module.exports = router;

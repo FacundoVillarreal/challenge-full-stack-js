@@ -16,23 +16,57 @@ const getByUserId = async (req, res) => {
 }
 
 const createUser = async (req, res) => {
-    const { name, email, password} = req.body;
+    const { name, email, password } = req.body;
 
+    if (!(email, password)) return res.status(400).json({
+        message: "Debe completar los campos",
+        state: false
+    });
     try {
+
+        const resp = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+        if (resp.rows.length >= 1) {
+            return res.status(400).json({ message: "Ya existe un usuario con ese email", state: false })
+        }
+
         const text = 'INSERT INTO users(name, email, password ) VALUES($1, $2, $3) RETURNING *'
         const values = [name, email, password];
         const response = await pool.query(text, values);
 
         res.status(200).json({
-            message: "Usuario creado con éxito"
+            message: "Usuario creado con éxito",
+            state: true
         })
-
-        console.log(response)
     } catch (error) {
         console.log(error)
     }
 }
 
+const loginUser = async (req, res) => {
+    const { name, email, password } = req.body;
+    if (!(email, password)) return res.status(400).json({
+        message: "Debe completar los campos",
+        state: false
+    });
+    try {
+        const resp = await pool.query(`
+        SELECT user_id FROM users 
+        WHERE email = $1 and password = $2`,
+            [email, password]);
+
+        if (resp.rows.length >= 1) {
+            const idUser = resp.rows.map(u => u.user_id)[0]
+            return res.status(200).json({ message: "Usario encontrado", state: true, user_id: idUser });
+        } else {
+            return res.status(400).json({ message: "Usario no encontrado", state: false });
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+loginUser
 const updateUser = async (req, res) => {
     const { id } = req.params;
     const { name, email, password } = req.body;
@@ -71,5 +105,6 @@ module.exports = {
     getByUserId,
     createUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    loginUser
 }
