@@ -66,6 +66,7 @@ const Login = () => {
                 if (state) {
                     if (user_id != undefined) {
                         setUserId(user_id);
+                        localStorage.setItem('userId', JSON.stringify(user_id));
                         navigate('/');
                     }
                 } else {

@@ -3,8 +3,11 @@ import { CalendarIcon, DeleteIcon, EditIcon, QuestionIcon } from '@chakra-ui/ico
 import { Box, Button, Input, InputGroup, InputLeftElement, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Radio, RadioGroup, Stack, Table, TableCaption, Tbody, Td, Th, Thead, Tooltip, Tr, useDisclosure, useToast, Modal } from '@chakra-ui/react'
 import moment from 'moment'
 import { FormOperations } from '../FormOperations/FormOperations'
-import { LoadingContext } from '../../App'
+import { LoadingContext, UserContext } from '../../App'
 export const TableOperations = ({ requestType, requestForm }) => {
+
+    const [userId, setUserId] = useContext(UserContext);
+
     //alertas
     const toast = useToast();
 
@@ -77,7 +80,7 @@ export const TableOperations = ({ requestType, requestForm }) => {
         setIsLoading(true);
         fetch(`http://localhost:3001/api/operation/${idEdit}`, {
             method: 'PUT',
-            body: JSON.stringify({ concepto: conceptoEdit, monto: montoEdit, fecha: fechaEdit, tipo: tipoEdit, user_id: 1 }),
+            body: JSON.stringify({ concepto: conceptoEdit, monto: montoEdit, fecha: fechaEdit, tipo: tipoEdit, user_id: userId }),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -97,8 +100,14 @@ export const TableOperations = ({ requestType, requestForm }) => {
             })
     }
 
+    // useEffect(() => {
+    //     // setUserId(JSON.parse(localStorage.getItem("userId")))
+    //     console.log(userId)
+    // }, [])
+
+
     useEffect(() => {
-        fetch(`http://localhost:3001/api/${requestType}`)
+        fetch(`http://localhost:3001/api/${requestType}/${userId}`)
             .then(response => response.json())
             .then(operation => {
                 setListOperation(operation);

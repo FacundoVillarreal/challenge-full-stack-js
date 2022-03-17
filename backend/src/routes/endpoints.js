@@ -14,11 +14,10 @@ const { getUsers, createUser, getByUserId, updateUser, deleteUser, loginUser } =
 const router = Router();
 
 // /api
-router.get('/home', getOperationsHome);
-router.get('/home/graphic', getOperationsGraphic); 
-
-router.get('/operations', getOperations); 
-router.get('/operation/:id', getByOperationId);
+router.get('/home/:userId', getOperationsHome);
+router.get('/graphic/:userId', getOperationsGraphic);
+router.get('/operations/:userId', getOperations);
+router.get('/operation/:id/:userId', getByOperationId);
 router.post('/operations', createOperation);
 router.put('/operation/:id', updateOperation);
 router.delete('/operation/:id', deleteOperation);

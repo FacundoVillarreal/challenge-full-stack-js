@@ -1,13 +1,16 @@
 import { CalendarIcon, QuestionIcon } from '@chakra-ui/icons'
 import { Box, Button, Input, InputGroup, InputLeftElement, Radio, RadioGroup, Stack, Text, useToast } from '@chakra-ui/react'
 import React, { useContext, useState } from 'react'
-import { LoadingContext } from '../../App';
+import { LoadingContext, UserContext } from '../../App';
 
 export const FormOperations = () => {
     const toast = useToast();
     const [_, setIsLoading] = useContext(LoadingContext);
 
-    const [userId, setUserId] = useState(1);
+    const [userId] = useContext(UserContext);
+    
+ 
+
     const [concepto, setConcepto] = useState('');
     const [monto, setMonto] = useState('');
     const [fecha, setFecha] = useState('');

@@ -1,9 +1,10 @@
 import { Box, Text } from '@chakra-ui/react';
 import React, { useContext, useEffect, useState } from 'react'
 import Chart from 'react-apexcharts'
-import { LoadingContext } from '../../App';
+import { LoadingContext, UserContext } from '../../App';
 
 export const Graphic = () => {
+  const [userId] = useContext(UserContext);
 
   const [data, setDate] = useState([]);
   const [ingresoTotal, setIngresoTotal] = useState(0)
@@ -21,7 +22,7 @@ export const Graphic = () => {
   const series = [ingresoTotal, egresoTotal];
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/home/graphic')
+    fetch(`http://localhost:3001/api/graphic/${userId}`)
       .then(response => response.json())
       .then(setDate);
   }, [loading])
