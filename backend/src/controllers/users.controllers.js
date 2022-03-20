@@ -1,5 +1,4 @@
 const pool = require('../db/database');
-const jwt = require('jsonwebtoken');
 
 const getUsers = async (req, res) => {
     const response = await pool.query('SELECT * FROM users');
@@ -66,8 +65,6 @@ const loginUser = async (req, res) => {
         console.log(error)
     }
 }
-
-
 
 const updateUser = async (req, res) => {
     const { id } = req.params;
