@@ -1,15 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { CalendarIcon, DeleteIcon, EditIcon, QuestionIcon } from '@chakra-ui/icons'
-import { Box, Button, Input, InputGroup, InputLeftElement, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Radio, RadioGroup, Stack, Table, TableCaption, Tbody, Td, Th, Thead, Tooltip, Tr, useDisclosure, useToast, Modal } from '@chakra-ui/react'
+import { Box, Button, Input, InputGroup, InputLeftElement, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Radio, RadioGroup, Stack, Table, TableCaption, Tbody, Td, Th, Thead, Tooltip, Tr, useDisclosure, useToast, Modal, Flex, useMediaQuery, Skeleton, Slide, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter } from '@chakra-ui/react'
 import moment from 'moment'
 import { FormOperations } from '../FormOperations/FormOperations'
 import { LoadingContext, UserContext } from '../../App'
 export const TableOperations = ({ requestType, requestForm }) => {
 
-    const [userId, setUserId] = useContext(UserContext);
 
+    const [isLargerThan350] = useMediaQuery('(max-width: 400px)')
+    const [userId, setUserId] = useContext(UserContext);
+    const [loading, setLoading] = useState(false);
     //alertas
     const toast = useToast();
+
+    const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure()
+    const cancelRef = React.useRef()
 
     //modal
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -57,9 +62,16 @@ export const TableOperations = ({ requestType, requestForm }) => {
         }
     }
 
-    const handleClickDeleted = (id) => {
-        setIsLoading(true);
-        fetch(`http://localhost:3001/api/operation/${id}`, {
+    const deletee = () => {
+
+    }
+
+    const handleClickDeleted = (id, confirmDelete) => {
+        onOpenDelete();
+        !confirmDelete && setIdEdit(id);
+
+        confirmDelete && setIsLoading(true);
+        confirmDelete && fetch(`http://localhost:3001/api/operation/${idEdit}`, {
             method: 'DELETE'
         })
             .then(resp => resp.json())
@@ -71,7 +83,10 @@ export const TableOperations = ({ requestType, requestForm }) => {
                     isClosable: true,
                 })
                 setIsLoading(false);
+                setIdEdit('');
+                onCloseDelete();
             })
+            .catch(err => onCloseDelete())
     }
 
     const handleSubmitEdit = (e) => {
@@ -100,74 +115,86 @@ export const TableOperations = ({ requestType, requestForm }) => {
             })
     }
 
-    // useEffect(() => {
-    //     // setUserId(JSON.parse(localStorage.getItem("userId")))
-    //     console.log(userId)
-    // }, [])
-
-
     useEffect(() => {
-        fetch(`http://localhost:3001/api/${requestType}/${userId}`)
+        setLoading(true);
+        userId && fetch(`http://localhost:3001/api/${requestType}/${userId}`)
             .then(response => response.json())
             .then(operation => {
                 setListOperation(operation);
                 setIsLoading(false);
+                setLoading(false);
             })
-    }, [isLoading]);
+            .catch(erro => setLoading(false))
+    }, [isLoading, userId]);
 
     return (
         <>
+
             {
                 requestForm && <FormOperations setIsLoading={setIsLoading} />
             }
-            <Box height='auto'>
-                <Table size='md' variant='simple' colorScheme='twitter'>
-                    <TableCaption>Lista de operaciones
-                    </TableCaption>
-                    <Thead>
-                        <Tr>
-                            <Th>Tipo</Th>
-                            <Th>Concepto</Th>
-                            <Th isNumeric>Monto</Th>
-                            <Th>Fecha</Th>
-                            <Th>Accion</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {
-                            listOperation.map((op, i) => {
-                                return (
-                                    <Tr key={i}>
-                                        <Td>{op.tipo}</Td>
-                                        <Td>{op.concepto}</Td>
-                                        <Td isNumeric>${op.monto}</Td>
-                                        <Td>{moment(op.fecha).format('DD/MM/YYYY')}</Td>
-                                        <Td isTruncated>
-                                            <Tooltip label='Editar' fontSize='xs'>
-                                                <Button
-                                                    colorScheme={'facebook'}
-                                                    size='sm'
-                                                    mr={1}
-                                                    onClick={() => handleClickEdit(op)}
-                                                >
-                                                    <EditIcon />
-                                                </Button>
-                                            </Tooltip>
-                                            <Tooltip label='Eliminar' fontSize='xs'>
-                                                <Button colorScheme={'red'} size='sm' onClick={() => handleClickDeleted(op.id)}>
-                                                    <DeleteIcon />
-                                                </Button>
-                                            </Tooltip>
-                                        </Td>
-                                    </Tr>
-                                )
-                            })
-                        }
-                    </Tbody>
-                </Table>
-            </Box>
+            {loading
+                ?
+                <Stack w={'70%'} display={'flex'} p={5}>
+                    <Skeleton height='60px' />
+                    <Skeleton height='30px' />
+                    <Skeleton height='30px' />
+                    <Skeleton height='30px' />
+                    <Skeleton height='30px' />
+                </Stack>
+                :
+                <Flex height='auto' width={[300, 400, 550, 600]} px={5} overflowX={isLargerThan350 && 'auto'}>
 
-            {/* ---------MODAL------     */}
+                    <Table variant='simple' colorScheme='twitter' mt={{ base: '15', md: '0px' }} maxWidth={'400px'}>
+                        <TableCaption>Lista de operaciones
+                        </TableCaption>
+                        <Thead>
+                            <Tr>
+                                <Th >Tipo</Th>
+                                <Th >Concepto</Th>
+                                <Th isNumeric >Monto</Th>
+                                <Th >Fecha</Th>
+                                <Th >Accion</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {
+                                listOperation.length > 0 && listOperation.map((op, i) => {
+                                    return (
+                                        <Tr key={op.id}>
+                                            <Td>{op.tipo}</Td>
+                                            <Td>{op.concepto}</Td>
+                                            <Td isNumeric>${op.monto}</Td>
+                                            <Td>{moment(op.fecha).format('DD/MM/YYYY')}</Td>
+                                            <Td isTruncated>
+                                                <Tooltip label='Editar' fontSize='xs'>
+                                                    <Button
+                                                        colorScheme={'facebook'}
+                                                        size='sm'
+                                                        mr={1}
+                                                        onClick={() => handleClickEdit(op)}
+                                                    >
+                                                        <EditIcon />
+                                                    </Button>
+                                                </Tooltip>
+                                                <Tooltip label='Eliminar' fontSize='xs'>
+                                                    <Button
+                                                        colorScheme={'red'} size='sm'
+                                                        onClick={() => handleClickDeleted(op.id, false)}
+                                                    >
+                                                        <DeleteIcon />
+                                                    </Button>
+                                                </Tooltip>
+                                            </Td>
+                                        </Tr>
+                                    )
+                                })
+                            }
+                        </Tbody>
+                    </Table>
+                </Flex>
+            }
+            
             <Modal
                 initialFocusRef={initialRef}
                 finalFocusRef={finalRef}
@@ -259,6 +286,39 @@ export const TableOperations = ({ requestType, requestForm }) => {
                     </ModalContent>
                 </form>
             </Modal>
+
+            <AlertDialog
+                isOpen={isOpenDelete}
+                leastDestructiveRef={cancelRef}
+                onClose={onCloseDelete}
+            >
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                            Eleminar Operación
+                        </AlertDialogHeader>
+
+                        <AlertDialogBody>
+                            ¿Está seguro? No puede deshacer esta acción después.
+                        </AlertDialogBody>
+
+                        <AlertDialogFooter>
+                            <Button ref={cancelRef} onClick={onCloseDelete}>
+                                Cancelar
+                            </Button>
+                            <Button 
+                                colorScheme='red'
+                                onClick={() => handleClickDeleted('', true)}
+                                ml={3}
+                                disabled={ isLoading && true}    
+                            >
+                                Eliminar
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+
         </>
     )
 }

@@ -31,7 +31,6 @@ function App() {
         <Box textAlign="start" fontSize="xl">
           <UserContext.Provider value={[userId, setUserId]}>
             <LoadingContext.Provider value={[isLoading, setIsLoading]}>
-              <Header />
               <Routes>
                 <Route path='/' element={<Home />} />
                 <Route path='/auth/newUser' element={<CreateAcount />} />

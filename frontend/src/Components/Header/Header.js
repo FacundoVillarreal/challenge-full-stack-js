@@ -16,7 +16,7 @@ export const Header = () => {
     }, [userId])
 
     return (
-        <Grid display={'flex'} m={2} justifyContent={'end'}>
+        <Grid display={'flex'} m={6} justifyContent={'end'}>
 
             <Menu>
                 <MenuButton as={Button} colorScheme='pink' >

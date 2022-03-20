@@ -80,10 +80,6 @@ const Login = () => {
             })
     }
 
-    useEffect(() => {
-        userId && console.log("ok")
-    }, [userId])
-
     return (
         <Flex
             flexDirection="column"

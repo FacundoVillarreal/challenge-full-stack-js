@@ -1,19 +1,25 @@
-import { Grid } from '@chakra-ui/react'
+import { Box, Flex, Grid, SimpleGrid } from '@chakra-ui/react'
 import React from 'react'
 import { Graphic } from '../../Components/Graphic/Graphic'
+import { Header } from '../../Components/Header/Header'
 import { TableOperations } from '../../Components/TableOperations/TableOperations'
 
 export const Home = () => {
   return (
-    // <FormOperations />
-    <Grid
-      templateColumns='repeat(2, 1fr)'
-      gap={6}
-      padding={6}
-    >
-      <Graphic />
-      <TableOperations requestType={'home'} requestForm={false}/>
-    </Grid>
 
+    <>
+      <Header />
+      <Flex
+        flexDirection={{ base: "column", md: "column", lg: "row" }}
+        width="100wh"
+        height={{ base: "100vh" }}
+        justifyContent="center"
+        alignItems={{ base: "center", md: "self-start" }}
+      >
+
+        <Graphic />
+        <TableOperations requestType={'home'} requestForm={false} />
+      </Flex>
+    </>
   )
 }

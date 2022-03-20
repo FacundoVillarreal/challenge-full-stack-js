@@ -85,9 +85,9 @@ export const FormOperations = () => {
 
 
     return (
-        <Box bg='twitter.900' height='330px' width='500px' style={{ borderRadius: '10px' }} >
+        <Box bg='twitter.900' height='auto' width={[300,400,550,500]} style={{ borderRadius: '10px' }}>
             <Text
-                fontSize='30px'
+                fontSize={{base: '20px', md:'30px'}}
                 textAlign={'center'}
                 color='white' pt={2}
             >

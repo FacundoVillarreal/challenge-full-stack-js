@@ -1,18 +1,21 @@
 import React from 'react'
-import { Grid } from '@chakra-ui/react'
+import { Box, Flex, Grid, Skeleton, Stack } from '@chakra-ui/react'
 import { TableOperations } from "../../Components/TableOperations/TableOperations"
+import { Header } from '../../Components/Header/Header'
 
-// ACA DEBE ESTAR LA TABLA DE OPERACIONES Y EL FORMULARIO
 export const Operations = () => {
-
-
   return (
-    <Grid
-      templateRows='repeat(2, 1fr)'
-      templateColumns='repeat(2, 1fr)'
-      gap={6}
-      padding={6}>
-      <TableOperations requestType={'operations'} requestForm={true}/>
-    </Grid>
+    <>
+      <Header />
+      <Flex
+        flexDirection={{ base: "column", md: "column", lg: "row" }}
+        width="100wh"
+        height={{ base: "100vh" }}
+        justifyContent="center"
+        alignItems={{ base: "center", md: "self-start" }}
+      >
+        <TableOperations requestType={'operations'} requestForm={true} />
+      </Flex>
+    </>
   )
 }
