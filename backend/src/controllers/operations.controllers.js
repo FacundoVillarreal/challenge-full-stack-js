@@ -2,106 +2,122 @@ const Operations = require('../models/Operations');
 
 const getOperations = async (req, res) => {
     const { userId } = req.params;
-    try {
-        const response = await Operations.findAll({
-            where: { user_id: userId },
-            order: [
-                ['id', 'ASC']
-            ]
-        });
-        res.json(response);
-    } catch (error) {
-        console.log(error)
-    }
+    const response = await Operations.findAll({
+        where: { user_id: userId },
+        order: [
+            ['id', 'ASC']
+        ]
+    })
+    .catch(err => {
+        console.log(err)
+    })
+    res.json(response);
 }
 
-//-------------------listo
-// const getOperations = async (req, res) => {
-//     const { userId } = req.params;
-//     const response = await pool.query('SELECT * FROM income_and_expenses WHERE user_id = $1 ORDER BY id ASC', [parseInt(userId)]);
-//     res.json(response.rows);
-// }
-// -----------------
-// const getByOperationId = async (req, res) => {
-//     const { id, userId } = req.params;
-//     try {
-//         const response = await pool.query('SELECT * FROM income_and_expenses WHERE id = $1 && user_id = $2', [id, userId]);
-//         res.status(200).json(response.rows);
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
+const getByOperationId = async (req, res) => {
+    const { id, userId } = req.params;
+    
+    const response = await Operations.findOne({
+        where: { user_id: userId, id: id }
+    })
+    .catch(err => {
+        console.log(err)
+    })
+    res.json(response);
+}
 
-// const getOperationsHome = async (req, res) => {
-//     const { userId } = req.params;
-//     const response = await pool.query('SELECT * FROM income_and_expenses WHERE user_id = $1 ORDER BY id DESC LIMIT 10', [userId]);
-//     res.json(response.rows);
-// }
+const getOperationsHome = async (req, res) => {
+    const { userId } = req.params;
+    const response = await Operations.findAll({
+        where: { user_id: userId },
+        order:[ 
+            ['id', 'ASC']
+        ],
+        limit: 10
+    })
+    .catch(err => {
+        console.log(err)
+    })
+    res.json(response);
+}
 
-// const getOperationsGraphic = async (req, res) => {
-//     const { userId } = req.params;
-//     const response = await pool.query('SELECT tipo, monto FROM income_and_expenses WHERE user_id = $1 ORDER BY id DESC LIMIT 10', [userId]);
+const getOperationsGraphic = async (req, res) => {
+    const { userId } = req.params;
 
-//     console.log(response.rows)
-//     res.json(response.rows);
-// }
+    const response = await Operations.findAll({
+        attributes: ["tipo", "monto"],
+        where: { user_id: userId }
+    })
+    .catch(err => {
+        console.log(err);
+    })
+    res.json(response);
+}
 
-// const createOperation = async (req, res) => {
-//     const { concepto, monto, fecha, tipo, user_id } = req.body;
-//     try {
-//         const text = 'INSERT INTO income_and_expenses(concepto, monto, fecha, tipo, user_id) VALUES($1, $2, $3, $4, $5) RETURNING *'
-//         const values = [concepto, monto, fecha, tipo, user_id];
-//         const response = await pool.query(text, values);
+const createOperation = async (req, res) => {
+    const { concepto, monto, fecha, tipo, user_id } = req.body;
+    const response = await Operations.create({
+        concepto,
+        monto,
+        fecha,
+        tipo,
+        user_id
+    }, {
+        fields: ['concepto', 'monto', 'fecha', 'tipo', "user_id"]
+    })
+    .catch(err => {
+        res.status(400).json({
+            message: "Operación rechazada",
+            error: err
+        })
+    })
+    res.status(200).json({
+        message: "Operación creada con éxito"
+    })
 
-//         res.status(200).json({
-//             message: "Operación creada con éxito"
-//         })
+}
 
-//     } catch (error) {
-//         res.status(400).json({
-//             message: "Operación rechazada",
-//             error: error
-//         })
-//     }
-// }
+const updateOperation = async (req, res) => {
+    const { id } = req.params;
+    const { concepto, monto, fecha, tipo, user_id } = req.body;
+    const response = await Operations.update({
+        concepto,
+        monto,
+        fecha,
+        tipo,
+        user_id
+    }, {
+        where: {
+            id: id
+        }
+    })
+    .catch(err =>{
+        console.log(err)
+    })
+    res.status(200).json({
+        message: "Operación actualizada con éxito"
+    })
+}
 
-// const updateOperation = async (req, res) => {
-//     const { id } = req.params;
-//     const { concepto, monto, fecha, tipo, user_id } = req.body;
-//     try {
-//         const text = 'UPDATE income_and_expenses SET concepto = $1 , monto = $2, fecha = $3, tipo = $4, user_id = $5 WHERE id = $6'
-//         const values = [concepto, monto, fecha, tipo, user_id, id]
+const deleteOperation = async (req, res) => {
+    const { id } = req.params;
+    const response = await Operations.destroy({
+        where: {
+            id
+        }
+    })
+    .catch(err => {
+        res.json(`No existe una operacion el id ${id}`);
+    })
+    res.json(`Operación ${id} eliminada con éxito`);
+}
 
-//         const response = await pool.query(text, values);
-//         res.status(200).json({
-//             message: "Operación actualizada con éxito"
-//         })
-//         console.log(response.rowCount)
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
-
-// const deleteOperation = async (req, res) => {
-//     const { id } = req.params;
-//     try {
-//         const response = await pool.query('DELETE FROM income_and_expenses WHERE id = $1', [id])
-//         response.rowCount == 1
-//             ? res.json(`Operación ${id} eliminada con éxito`)
-//             : res.json(`No existe una operacion el id ${id}`);
-
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
-
-// module.exports = {
-//     getOperations,
-//     getByOperationId,
-//     createOperation,
-//     updateOperation,
-//     deleteOperation,
-//     getOperationsHome,
-//     getOperationsGraphic
-// }
-module.exports = getOperations;
+module.exports = {
+    getOperations,
+    getByOperationId,
+    createOperation,
+    updateOperation,
+    deleteOperation,
+    getOperationsHome,
+    getOperationsGraphic
+}

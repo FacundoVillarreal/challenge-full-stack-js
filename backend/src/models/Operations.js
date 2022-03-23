@@ -7,6 +7,7 @@ const Operations = sequelize.define('income_and_expenses', {
     //propiedades de operations
     id: {
         type: Sequelize.INTEGER,
+        autoIncrement: true,
         primaryKey: true
     },
     concepto: {

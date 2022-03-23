@@ -18,4 +18,5 @@ const sequelize = new Sequelize(
         loggin: false
     }
 )
+
 module.exports = sequelize;
