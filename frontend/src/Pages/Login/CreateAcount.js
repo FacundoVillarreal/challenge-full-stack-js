@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
     Flex,
     Heading,
@@ -17,18 +18,18 @@ import {
     useToast
 } from "@chakra-ui/react";
 import { FaUserAlt, FaLock } from "react-icons/fa";
-import { NavLink, useNavigate } from "react-router-dom";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 
 const CreateAcount = () => {
     const [showPassword, setShowPassword] = useState(false);
-
     const handleShowClick = () => setShowPassword(!showPassword);
-    const navigate = useNavigate();
-    const toast = useToast();
 
+    const toast = useToast();
+    
+    const navigate = useNavigate();
+    
     const [emailValue, setEmailValue] = useState("");
     const [passValue, setPassValue] = useState("");
 
@@ -61,7 +62,7 @@ const CreateAcount = () => {
             })
             .then(res => {
                 console.log(res)
-                if (res != undefined) {
+                if (res !== undefined) {
                     const { message, state } = res
                     toast({
                         title: `${message}`,

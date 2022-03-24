@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import {
     Flex,
     Heading,
@@ -64,7 +64,7 @@ const Login = () => {
             .then(res => {
                 const { message, state, user_id } = res;
                 if (state) {
-                    if (user_id != undefined) {
+                    if (user_id !== undefined) {
                         setUserId(user_id);
                         localStorage.setItem('userId', JSON.stringify(user_id));
                         navigate('/');

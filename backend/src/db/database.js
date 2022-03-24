@@ -1,11 +1,16 @@
 const { Sequelize } = require('sequelize');
 
+const NODE_ENV = process.env.NODE_ENV || "development";
+
+require('dotenv').config({
+    path: `.env.${NODE_ENV}`
+}); 
+
 //cadena de conexion
 const sequelize = new Sequelize(
-    'administracion',//database name
-    'postgres',//username
-    'postgres',//pass
-    //config para sequelize
+    process.env.DATABASE_NAME,
+    process.env.DATABASE_USER_NAME,
+    process.env.DATABASE_PASS,
     {
         host: 'localhost',
         dialect: 'postgres',

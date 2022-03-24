@@ -1,18 +1,57 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { CalendarIcon, DeleteIcon, EditIcon, QuestionIcon } from '@chakra-ui/icons'
-import { Box, Button, Input, InputGroup, InputLeftElement, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Radio, RadioGroup, Stack, Table, TableCaption, Tbody, Td, Th, Thead, Tooltip, Tr, useDisclosure, useToast, Modal, Flex, useMediaQuery, Skeleton, Slide, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter } from '@chakra-ui/react'
 import moment from 'moment'
+import { Spiner } from "../Spinner/Spinner"
 import { FormOperations } from '../FormOperations/FormOperations'
 import { LoadingContext, UserContext } from '../../App'
+import { CalendarIcon, DeleteIcon, EditIcon, QuestionIcon } from '@chakra-ui/icons'
+import {
+    Button,
+    Input,
+    InputGroup,
+    InputLeftElement,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Radio,
+    RadioGroup,
+    Stack,
+    Table,
+    TableCaption,
+    Tbody,
+    Td,
+    Th,
+    Thead,
+    Tooltip,
+    Tr,
+    useDisclosure,
+    useToast,
+    Modal,
+    Flex,
+    useMediaQuery,
+    AlertDialog,
+    AlertDialogOverlay,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogBody,
+    AlertDialogFooter
+} from '@chakra-ui/react'
 export const TableOperations = ({ requestType, requestForm }) => {
 
-
     const [isLargerThan350] = useMediaQuery('(max-width: 400px)')
-    const [userId, setUserId] = useContext(UserContext);
     const [loading, setLoading] = useState(false);
+    
+    //estado global para obtener el id del usuario
+    const [userId, setUserId] = useContext(UserContext);
+
+    //estado global; se utiliza para detectar cuando volver a realizar una peticion a la lista de operaciones
+    const [isLoading, setIsLoading] = useContext(LoadingContext);
+
     //alertas
     const toast = useToast();
 
+    //modal delete
     const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure()
     const cancelRef = React.useRef()
 
@@ -27,10 +66,7 @@ export const TableOperations = ({ requestType, requestForm }) => {
     const [fechaEdit, setFechaEdit] = useState('');
     const [tipoEdit, setTipoEdit] = useState('');
     const [idEdit, setIdEdit] = useState('');
-
-    //estado global; se utiliza para detectar cuando volver a realizar una peticion a la lista de operaciones
-    const [isLoading, setIsLoading] = useContext(LoadingContext);
-
+    
     //lista de operaciones
     const [listOperation, setListOperation] = useState([]);
 
@@ -60,10 +96,6 @@ export const TableOperations = ({ requestType, requestForm }) => {
             default:
                 break;
         }
-    }
-
-    const deletee = () => {
-
     }
 
     const handleClickDeleted = (id, confirmDelete) => {
@@ -129,72 +161,69 @@ export const TableOperations = ({ requestType, requestForm }) => {
 
     return (
         <>
-
             {
-                requestForm && <FormOperations setIsLoading={setIsLoading} />
-            }
-            {loading
-                ?
-                <Stack w={'70%'} display={'flex'} p={5}>
-                    <Skeleton height='60px' />
-                    <Skeleton height='30px' />
-                    <Skeleton height='30px' />
-                    <Skeleton height='30px' />
-                    <Skeleton height='30px' />
-                </Stack>
-                :
-                <Flex height='auto' width={[300, 400, 550, 600]} px={5} overflowX={isLargerThan350 && 'auto'}>
+                loading
+                    ?
+                    <Spiner />
+                    :
+                    <>
+                        {
+                            requestForm && <FormOperations setIsLoading={setIsLoading} />
+                        }
 
-                    <Table variant='simple' colorScheme='twitter' mt={{ base: '15', md: '0px' }} maxWidth={'400px'}>
-                        <TableCaption>Lista de operaciones
-                        </TableCaption>
-                        <Thead>
-                            <Tr>
-                                <Th >Tipo</Th>
-                                <Th >Concepto</Th>
-                                <Th isNumeric >Monto</Th>
-                                <Th >Fecha</Th>
-                                <Th >Accion</Th>
-                            </Tr>
-                        </Thead>
-                        <Tbody>
-                            {
-                                listOperation.length > 0 && listOperation.map((op, i) => {
-                                    return (
-                                        <Tr key={op.id}>
-                                            <Td>{op.tipo}</Td>
-                                            <Td>{op.concepto}</Td>
-                                            <Td isNumeric>${op.monto}</Td>
-                                            <Td>{moment(op.fecha).format('DD/MM/YYYY')}</Td>
-                                            <Td isTruncated>
-                                                <Tooltip label='Editar' fontSize='xs'>
-                                                    <Button
-                                                        colorScheme={'facebook'}
-                                                        size='sm'
-                                                        mr={1}
-                                                        onClick={() => handleClickEdit(op)}
-                                                    >
-                                                        <EditIcon />
-                                                    </Button>
-                                                </Tooltip>
-                                                <Tooltip label='Eliminar' fontSize='xs'>
-                                                    <Button
-                                                        colorScheme={'red'} size='sm'
-                                                        onClick={() => handleClickDeleted(op.id, false)}
-                                                    >
-                                                        <DeleteIcon />
-                                                    </Button>
-                                                </Tooltip>
-                                            </Td>
-                                        </Tr>
-                                    )
-                                })
-                            }
-                        </Tbody>
-                    </Table>
-                </Flex>
+                        <Flex height='auto' width={[300, 400, 550, 600]} px={5} overflowX={isLargerThan350 && 'auto'}>
+
+                            <Table variant='simple' colorScheme='twitter' mt={{ base: '15', md: '0px' }} maxWidth={'400px'}>
+                                <TableCaption>Lista de operaciones
+                                </TableCaption>
+                                <Thead>
+                                    <Tr>
+                                        <Th >Tipo</Th>
+                                        <Th >Concepto</Th>
+                                        <Th isNumeric >Monto</Th>
+                                        <Th >Fecha</Th>
+                                        <Th >Accion</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    {
+                                        listOperation.length > 0 && listOperation.map((op, i) => {
+                                            return (
+                                                <Tr key={op.id}>
+                                                    <Td>{op.tipo}</Td>
+                                                    <Td>{op.concepto}</Td>
+                                                    <Td isNumeric>${op.monto}</Td>
+                                                    <Td>{moment(op.fecha).format('DD/MM/YYYY')}</Td>
+                                                    <Td isTruncated>
+                                                        <Tooltip label='Editar' fontSize='xs'>
+                                                            <Button
+                                                                colorScheme={'facebook'}
+                                                                size='sm'
+                                                                mr={1}
+                                                                onClick={() => handleClickEdit(op)}
+                                                            >
+                                                                <EditIcon />
+                                                            </Button>
+                                                        </Tooltip>
+                                                        <Tooltip label='Eliminar' fontSize='xs'>
+                                                            <Button
+                                                                colorScheme={'red'} size='sm'
+                                                                onClick={() => handleClickDeleted(op.id, false)}
+                                                            >
+                                                                <DeleteIcon />
+                                                            </Button>
+                                                        </Tooltip>
+                                                    </Td>
+                                                </Tr>
+                                            )
+                                        })
+                                    }
+                                </Tbody>
+                            </Table>
+                        </Flex>
+                    </>
             }
-            
+
             <Modal
                 initialFocusRef={initialRef}
                 finalFocusRef={finalRef}
@@ -306,11 +335,11 @@ export const TableOperations = ({ requestType, requestForm }) => {
                             <Button ref={cancelRef} onClick={onCloseDelete}>
                                 Cancelar
                             </Button>
-                            <Button 
+                            <Button
                                 colorScheme='red'
                                 onClick={() => handleClickDeleted('', true)}
                                 ml={3}
-                                disabled={ isLoading && true}    
+                                disabled={isLoading && true}
                             >
                                 Eliminar
                             </Button>
@@ -318,7 +347,6 @@ export const TableOperations = ({ requestType, requestForm }) => {
                     </AlertDialogContent>
                 </AlertDialogOverlay>
             </AlertDialog>
-
         </>
     )
 }

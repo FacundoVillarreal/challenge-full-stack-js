@@ -1,7 +1,7 @@
-import { Box, Flex, Skeleton, SkeletonCircle, Text } from '@chakra-ui/react';
 import React, { useContext, useEffect, useState } from 'react'
-import Chart from 'react-apexcharts'
 import { LoadingContext, UserContext } from '../../App';
+import { Box, Skeleton, SkeletonCircle, Stack, Text } from '@chakra-ui/react';
+import Chart from 'react-apexcharts'
 
 export const Graphic = () => {
   const [userId, setUserId] = useContext(UserContext);
@@ -23,12 +23,6 @@ export const Graphic = () => {
   }
   const series = [ingresoTotal, egresoTotal];
 
-
-  // useEffect(() => {
-  //   setUserId(parseInt(localStorage.getItem("userId")))
-  // }, [])
-
-
   useEffect(() => {
     setLoading(true);
     setUserId(parseInt(localStorage.getItem("userId")))
@@ -42,7 +36,6 @@ export const Graphic = () => {
   }, [isLoading, userId])
 
   useEffect(() => {
-    // console.log("se cargo grapichs desde data")
     const i = data.filter(op => op.tipo === "Ingreso").reduce((acc, actual) => acc + actual.monto, 0);
     const e = data.filter(op => op.tipo === "Egreso").reduce((acc, actual) => acc + actual.monto, 0);
     setIngresoTotal(i);
@@ -54,10 +47,10 @@ export const Graphic = () => {
       {
         loading
           ?
-          <Box>
-            <SkeletonCircle size='275' />
-            <Skeleton height='20px' width='250px' m={'20px 40px'} />
-          </Box>
+          <Stack width={"auto"} mr={{md: "600px"}}>
+            <SkeletonCircle size='200' />
+            <Skeleton height='10px' width='200px' m={'20px 40px'} />
+          </Stack>
           :
           <Box width={[300, 350, 550, 500]}>
             < Chart
@@ -73,7 +66,6 @@ export const Graphic = () => {
             </Box>
           </Box>
       }
-
     </div >
   )
 }

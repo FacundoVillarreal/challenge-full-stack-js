@@ -1,9 +1,18 @@
-import { Button, Grid, Menu, MenuButton, MenuDivider, MenuGroup, MenuItem, MenuList } from '@chakra-ui/react'
 import React, { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../../App';
-export const Header = () => {
+import { 
+    Button, 
+    Grid, 
+    Menu, 
+    MenuButton, 
+    MenuDivider, 
+    MenuGroup, 
+    MenuItem, 
+    MenuList 
+} from '@chakra-ui/react'
 
+export const Header = () => {
     const [userId, setUserId] = useContext(UserContext);
 
     const handleClickLogout = () => {
@@ -17,7 +26,6 @@ export const Header = () => {
 
     return (
         <Grid display={'flex'} m={6} justifyContent={'end'}>
-
             <Menu>
                 <MenuButton as={Button} colorScheme='pink' >
                     Perfil
@@ -42,6 +50,5 @@ export const Header = () => {
                 </MenuList>
             </Menu>
         </Grid >
-
     )
 }

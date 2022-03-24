@@ -1,15 +1,26 @@
-import { CalendarIcon, QuestionIcon } from '@chakra-ui/icons'
-import { Box, Button, Input, InputGroup, InputLeftElement, Radio, RadioGroup, Stack, Text, useToast } from '@chakra-ui/react'
 import React, { useContext, useState } from 'react'
 import { LoadingContext, UserContext } from '../../App';
+import { CalendarIcon, QuestionIcon } from '@chakra-ui/icons'
+import { 
+    Box, 
+    Button, 
+    Input, 
+    InputGroup, 
+    InputLeftElement,
+    Radio, 
+    RadioGroup, 
+    Stack, 
+    Text, 
+    useToast 
+} from '@chakra-ui/react'
 
 export const FormOperations = () => {
-    const toast = useToast();
-    const [_, setIsLoading] = useContext(LoadingContext);
-
+    //context 
     const [userId] = useContext(UserContext);
+    const [_, setIsLoading] = useContext(LoadingContext);
     
- 
+    //alerts
+    const toast = useToast();
 
     const [concepto, setConcepto] = useState('');
     const [monto, setMonto] = useState('');
@@ -74,20 +85,18 @@ export const FormOperations = () => {
             }
         })
 
-
         const clearInputs = () => {
             setConcepto('');
             setMonto('');
             setFecha('');
         }
-
     }
 
 
     return (
-        <Box bg='twitter.900' height='auto' width={[300,400,550,500]} style={{ borderRadius: '10px' }}>
+        <Box bg='twitter.900' height='auto' width={[300, 400, 550, 500]} style={{ borderRadius: '10px' }}>
             <Text
-                fontSize={{base: '20px', md:'30px'}}
+                fontSize={{ base: '20px', md: '30px' }}
                 textAlign={'center'}
                 color='white' pt={2}
             >
@@ -95,70 +104,68 @@ export const FormOperations = () => {
             </Text>
             <Box color='white'>
 
-                <form onSubmit={handleSubmit}>
-                    <Stack spacing={3} padding={5}>
+                <Stack as={"form"} spacing={3} padding={5} onSubmit={handleSubmit}>
 
-                        <InputGroup>
-                            <InputLeftElement
-                                pointerEvents='none'
-                                children={<QuestionIcon color='white' />}
-                            />
-                            <Input
-                                placeholder='Ingrese un concepto'
-                                color='white'
-                                autoComplete='of'
-                                onChange={onChangeConcepto}
-                                value={concepto}
-                            />
-                        </InputGroup>
+                    <InputGroup>
+                        <InputLeftElement
+                            pointerEvents='none'
+                            children={<QuestionIcon color='white' />}
+                        />
+                        <Input
+                            placeholder='Ingrese un concepto'
+                            color='white'
+                            autoComplete='of'
+                            onChange={onChangeConcepto}
+                            value={concepto}
+                        />
+                    </InputGroup>
 
-                        <InputGroup>
-                            <InputLeftElement
-                                pointerEvents='none'
-                                color='white'
-                                fontSize='1.2em'
-                                children='$'
-                            />
-                            <Input
-                                placeholder='Ingrese un monto'
-                                autoComplete='of'
-                                onChange={onChangeMonto}
-                                value={monto}
-                            />
-                        </InputGroup>
+                    <InputGroup>
+                        <InputLeftElement
+                            pointerEvents='none'
+                            color='white'
+                            fontSize='1.2em'
+                            children='$'
+                        />
+                        <Input
+                            placeholder='Ingrese un monto'
+                            autoComplete='of'
+                            onChange={onChangeMonto}
+                            value={monto}
+                        />
+                    </InputGroup>
 
-                        <InputGroup>
-                            <InputLeftElement
-                                pointerEvents='none'
-                                color='white'
-                                fontSize='1.2em'
-                                children={<CalendarIcon color='white' />}
-                            />
-                            <Input
-                                placeholder='Ingrese una fecha'
-                                autoComplete='of'
-                                onChange={onChangeFecha}
-                                value={fecha}
-                            />
-                        </InputGroup>
+                    <InputGroup>
+                        <InputLeftElement
+                            pointerEvents='none'
+                            color='white'
+                            fontSize='1.2em'
+                            children={<CalendarIcon color='white' />}
+                        />
+                        <Input
+                            placeholder='Ingrese una fecha'
+                            autoComplete='of'
+                            onChange={onChangeFecha}
+                            value={fecha}
+                        />
+                    </InputGroup>
 
-                        <InputGroup>
-                            <RadioGroup>
-                                <Stack direction='row' onChange={onChangeTipo}>
-                                    <Radio value='Ingreso' colorScheme='green' >Ingreso</Radio>
-                                    <Radio value='Egreso' colorScheme='red' >Egreso</Radio>
-                                </Stack>
-                            </RadioGroup>
-                        </InputGroup>
+                    <InputGroup>
+                        <RadioGroup>
+                            <Stack direction='row' onChange={onChangeTipo}>
+                                <Radio value='Ingreso' colorScheme='green' >Ingreso</Radio>
+                                <Radio value='Egreso' colorScheme='red' >Egreso</Radio>
+                            </Stack>
+                        </RadioGroup>
+                    </InputGroup>
 
-                        <InputGroup justifyContent={'end'}>
-                            <Button colorScheme='green' size='md' type='submit'>
-                                Guardar
-                            </Button>
-                        </InputGroup>
+                    <InputGroup justifyContent={'end'}>
+                        <Button colorScheme='green' size='md' type='submit'>
+                            Guardar
+                        </Button>
+                    </InputGroup>
 
-                    </Stack>
-                </form>
+                </Stack>
             </Box>
         </Box>
 
