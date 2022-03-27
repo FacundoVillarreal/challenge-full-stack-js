@@ -36,9 +36,10 @@ const sequelize = new Sequelize(
             idle: 10000
         },
         loggin: false
-    })
+    }
+)
 
-    ```
+```
 Y para iniciar la app de manera local, recuerden
 ```
 backend / npm run dev
