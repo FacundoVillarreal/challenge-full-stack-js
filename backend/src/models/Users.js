@@ -21,6 +21,10 @@ const Users = sequelize.define('users', {
         type: Sequelize.TEXT
     },
 
+}, {
+    freezeTableName: true
 });
-
+Users.sync({ alter: true })
+    .then(console.log("create table users succes"))
+    .catch(console.log)
 module.exports = Users;
