@@ -1,50 +1,40 @@
 import React, { useContext, useState } from 'react'
 import { LoadingContext, UserContext } from '../../App';
 import { CalendarIcon, QuestionIcon } from '@chakra-ui/icons'
-import { 
-    Box, 
-    Button, 
-    Input, 
-    InputGroup, 
+import {
+    Box,
+    Button,
+    Input,
+    InputGroup,
     InputLeftElement,
-    Radio, 
-    RadioGroup, 
-    Stack, 
-    Text, 
-    useToast 
+    Radio,
+    RadioGroup,
+    Stack,
+    Text,
+    useToast
 } from '@chakra-ui/react'
+import { useForm } from '../../hooks/useForm';
 
 export const FormOperations = () => {
     //context 
     const [userId] = useContext(UserContext);
     const [_, setIsLoading] = useContext(LoadingContext);
-    
+
     //alerts
     const toast = useToast();
 
-    const [concepto, setConcepto] = useState('');
-    const [monto, setMonto] = useState('');
-    const [fecha, setFecha] = useState('');
-    const [tipo, setTipo] = useState('');
+    const [formValues, handleFormChange] = useForm({
+        concepto: "",
+        monto: "",
+        fecha: "",
+        tipo: ""
+    });
 
-    const onChangeConcepto = (e) => {
-        setConcepto(e.target.value);
-    }
-
-    const onChangeMonto = (e) => {
-        setMonto(e.target.value);
-    }
-
-    const onChangeFecha = (e) => {
-        setFecha(e.target.value);
-    }
-
-    const onChangeTipo = (e) => {
-        setTipo(e.target.value);
-    }
-
+    const { concepto, monto, fecha, tipo } = formValues;
+   
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log({concepto, monto, fecha, tipo})
         setIsLoading(true);
         const values = { concepto, monto, fecha, tipo, user_id: userId };
 
@@ -70,7 +60,6 @@ export const FormOperations = () => {
                     })
                 })
                 setIsLoading(true);
-                clearInputs();
             } else {
                 resp.json().then(resp => {
                     const { message } = resp;
@@ -84,12 +73,6 @@ export const FormOperations = () => {
                 setIsLoading(false);
             }
         })
-
-        const clearInputs = () => {
-            setConcepto('');
-            setMonto('');
-            setFecha('');
-        }
     }
 
 
@@ -114,8 +97,9 @@ export const FormOperations = () => {
                         <Input
                             placeholder='Ingrese un concepto'
                             color='white'
-                            autoComplete='of'
-                            onChange={onChangeConcepto}
+                            autoComplete='off'
+                            onChange={handleFormChange}
+                            name= 'concepto'
                             value={concepto}
                         />
                     </InputGroup>
@@ -129,8 +113,9 @@ export const FormOperations = () => {
                         />
                         <Input
                             placeholder='Ingrese un monto'
-                            autoComplete='of'
-                            onChange={onChangeMonto}
+                            autoComplete='off'
+                            onChange={handleFormChange}
+                            name = 'monto'
                             value={monto}
                         />
                     </InputGroup>
@@ -144,17 +129,18 @@ export const FormOperations = () => {
                         />
                         <Input
                             placeholder='Ingrese una fecha'
-                            autoComplete='of'
-                            onChange={onChangeFecha}
+                            autoComplete='off'
+                            onChange={handleFormChange}
+                            name = 'fecha'
                             value={fecha}
                         />
                     </InputGroup>
 
                     <InputGroup>
                         <RadioGroup>
-                            <Stack direction='row' onChange={onChangeTipo}>
-                                <Radio value='Ingreso' colorScheme='green' >Ingreso</Radio>
-                                <Radio value='Egreso' colorScheme='red' >Egreso</Radio>
+                            <Stack direction='row' onChange={handleFormChange}>
+                                <Radio name='tipo' value='Ingreso' colorScheme='green' >Ingreso</Radio>
+                                <Radio name='tipo' value='Egreso' colorScheme='red' >Egreso</Radio>
                             </Stack>
                         </RadioGroup>
                     </InputGroup>
