@@ -37,6 +37,7 @@ import {
     AlertDialogBody,
     AlertDialogFooter
 } from '@chakra-ui/react'
+import { useForm } from '../../hooks/useForm'
 export const TableOperations = ({ requestType, requestForm }) => {
 
     const [isLargerThan350] = useMediaQuery('(max-width: 400px)')
@@ -60,42 +61,23 @@ export const TableOperations = ({ requestType, requestForm }) => {
     const initialRef = React.useRef();
     const finalRef = React.useRef();
 
-    //state para el modal de edit; carga los inputs
-    const [conceptoEdit, setConceptoEdit] = useState('');
-    const [montoEdit, setMontoEdit] = useState('');
-    const [fechaEdit, setFechaEdit] = useState('');
-    const [tipoEdit, setTipoEdit] = useState('');
+    //customHookForm
+    const [formValues, handleFormValues, setFormValues] = useForm()
+    const {concepto, monto, fecha, tipo} = formValues;
     const [idEdit, setIdEdit] = useState('');
     
     //lista de operaciones
     const [listOperation, setListOperation] = useState([]);
 
     const handleClickEdit = ({ concepto, monto, fecha, tipo, id }) => {
-        setConceptoEdit(concepto);
-        setMontoEdit(monto);
-        setFechaEdit(moment(fecha).format('DD/MM/YYYY'));
-        setTipoEdit(tipo);
+        setFormValues({
+            concepto,
+            monto,
+            fecha: moment(fecha).format('DD/MM/YYYY'),
+            tipo
+        })
         setIdEdit(id);
         onOpen();
-    }
-
-    const handleChangeEdit = (e) => {
-        switch (e.target.name) {
-            case 'concepto':
-                setConceptoEdit(e.target.value);
-                break;
-            case 'monto':
-                setMontoEdit(e.target.value);
-                break;
-            case 'fecha':
-                setFechaEdit(e.target.value);
-                break;
-            case 'tipo':
-                setTipoEdit(e.target.value);
-                break;
-            default:
-                break;
-        }
     }
 
     const handleClickDeleted = (id, confirmDelete) => {
@@ -122,12 +104,11 @@ export const TableOperations = ({ requestType, requestForm }) => {
     }
 
     const handleSubmitEdit = (e) => {
-        console.log("edit")
         e.preventDefault();
         setIsLoading(true);
         fetch(`http://localhost:3001/api/operation/${idEdit}`, {
             method: 'PUT',
-            body: JSON.stringify({ concepto: conceptoEdit, monto: montoEdit, fecha: fechaEdit, tipo: tipoEdit, user_id: userId }),
+            body: JSON.stringify({ concepto, monto, fecha, tipo, user_id: userId }),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -247,8 +228,8 @@ export const TableOperations = ({ requestType, requestForm }) => {
                                         autoComplete='off'
                                         ref={initialRef}
                                         name='concepto'
-                                        value={conceptoEdit}
-                                        onChange={handleChangeEdit}
+                                        value={concepto}
+                                        onChange={handleFormValues}
                                     />
                                 </InputGroup>
 
@@ -263,8 +244,8 @@ export const TableOperations = ({ requestType, requestForm }) => {
                                         placeholder='Ingrese un monto'
                                         autoComplete='off'
                                         name='monto'
-                                        value={montoEdit}
-                                        onChange={handleChangeEdit}
+                                        value={monto}
+                                        onChange={handleFormValues}
                                     />
                                 </InputGroup>
 
@@ -279,8 +260,8 @@ export const TableOperations = ({ requestType, requestForm }) => {
                                         placeholder='Ingrese una fecha'
                                         autoComplete='off'
                                         name='fecha'
-                                        value={fechaEdit}
-                                        onChange={handleChangeEdit}
+                                        value={fecha}
+                                        onChange={handleFormValues}
                                     />
                                 </InputGroup>
 
@@ -289,7 +270,7 @@ export const TableOperations = ({ requestType, requestForm }) => {
                                         <Stack
                                             direction='row'
                                             name='tipo'
-                                            onChange={handleChangeEdit}
+                                            onChange={handleFormValues}
                                         >
                                             <Radio
                                                 value='Ingreso'
